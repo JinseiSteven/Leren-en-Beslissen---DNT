@@ -94,4 +94,3 @@ if __name__ == '__main__':
 
     convert_files(sys.argv[1:])
     print('Done')
-    sys.exit(0)
