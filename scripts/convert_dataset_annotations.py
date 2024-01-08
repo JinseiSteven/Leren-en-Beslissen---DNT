@@ -2,10 +2,10 @@
 
 """
 Converts the 'Dataset_maker_faire' annotation data files to the
-'SPLObjDetectDatasetV2' dataset its data format.
+'SPLObjDetectDatasetV2' dataset format.
 
 See https://docs.ultralytics.com/datasets/detect/#ultralytics-yolo-format for
-more info about the format specifie for the SPLObjDetectDatasetV2 dataset.
+more info about the SPLObjDetectDatasetV2 dataset format.
 
 Usage: ./convert_dataset_annotations.py file1.xml file2.xml ... fileN.xml
 """
