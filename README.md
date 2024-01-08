@@ -1,1 +1,1 @@
-# Leren-en-Beslissen---DNT
+# Leren en Beslissen DNT
