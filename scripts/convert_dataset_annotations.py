@@ -36,7 +36,7 @@ def convert_files(filepaths: list[str]) -> None:
         # Read XML file and convert to python dict
         xml_dict = xmltodict.parse(open(filepath, 'r').read())
 
-        # If there are no annotations, remove the file immediately.
+        # If there are no annotations, remove the file immediately
         if 'object' not in xml_dict['annotation']:
             print('No detected objects present, removing file')
             os.remove(filepath)
