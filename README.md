@@ -43,7 +43,7 @@ See `./train.py --help` for all possible arguments.
 
 # Authors
 
-Joost Weerheim (13769758)
-Kim Koomen (14621312)
-Ross Geurts (14599996)
-Stephan Visser (13977571)
+- Joost Weerheim (13769758)
+- Kim Koomen (14621312)
+- Ross Geurts (14599996)
+- Stephan Visser (13977571)
