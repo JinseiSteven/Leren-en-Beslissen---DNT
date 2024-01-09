@@ -15,6 +15,8 @@ Class        Images  Instances      Box(P          R      mAP50  mAP50-95)
 robot           369        210      0.387      0.138      0.105      0.054
 goal_post       369         32          0          0          0          0
 pen_spot        369         26          0          0    0.00947     0.0036
+
+Usage: ./scripts/filter_mf_files.py DATASET_MAKER_FAIRE_PATH
 """
 
 import sys
