@@ -1,6 +1,6 @@
 # Leren en Beslissen DNT
 
-[TODO:description]
+Machine learning project focussing on SPL specific object detection using YOLOv8 and additional optimizations. This is a project conducted by students from the University of Amsterdam.
 
 # Installation
 
