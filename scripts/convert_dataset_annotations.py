@@ -22,8 +22,8 @@ except ImportError:
 CLASS_IDS = {
     'ball': 0,
     'robot': 1,
-    'goalpost': 2,
-    'goalspot': 3,
+    'goalpost': 2, # two white pillars part of the goal area itself
+    'goalspot': 3, # spot in front of the goal area for the penalty
 }
 
 def convert_files(filepaths: list[str]) -> None:

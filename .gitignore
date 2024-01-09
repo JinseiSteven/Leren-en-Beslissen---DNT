@@ -1,3 +1,13 @@
+# Custom
+py/
+datasets/*
+!datasets/.gitkeep
+detect/
+*.pt
+**/*.pt
+*.txt
+!requirements.txt
+
 ### Linux ###
 *~
 
