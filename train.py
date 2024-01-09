@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 from ultralytics import YOLO, settings
-import sys
 import os
 import argparse
 
@@ -18,7 +17,7 @@ def parse_arguments() -> argparse.Namespace:
 
     parser.add_argument('--yolo-config',
                         required=True,
-                        help='YAML YOLO config passed to model()')
+                        help='YAML YOLO config passed to the YOLO class constructor')
 
     parser.add_argument('--train-config',
                         required=True,
