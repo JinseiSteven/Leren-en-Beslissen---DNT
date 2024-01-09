@@ -17,10 +17,14 @@ $ pip3 install -r requirements.txt
 
 # Datasets
 
-To train the model with the dataset, please request the dataset from one of the
-authors mentioned at the [Authors](#authors) section.
+To train the model with the dataset, please request the `custom` dataset from
+one of the authors mentioned at the [Authors](#authors) section.
 
-All datasets should be put inside `./datasets/<DATASET_FOLDER_NAME>`
+- Download the `customs.zip` and unzip
+- Put the custom/ folder inside the datasets/ folder in the git repo
+- Run `./scripts/data_splitter.py --sourcepath datasets/custom/`
+
+Continue to the [Usage](#usage) section.
 
 # Usage
 
