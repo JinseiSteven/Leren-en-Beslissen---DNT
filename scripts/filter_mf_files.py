@@ -46,16 +46,23 @@ if __name__ == '__main__':
         except FileNotFoundError:
             continue
 
-        filtered_lines = []
+        filtered_lines_indices = []
 
         # Remove rows that are not class index 0 (ball) or robot (1)
-        for line in lines:
+        for index, line in enumerate(lines):
             class_index = int(line.split(' ')[0])
             if class_index in [0, 1]:
-                filtered_lines.append(line)
+                filtered_lines_indices.append(index)
 
         # If we have some remaining lines left, then they are index 0 or 1,
         # and thus we can keep this file by copying it over to the data_cleaned.
-        if len(filtered_lines) > 0:
+        if len(filtered_lines_indices) > 0:
             copyfile(join(data_dir, img_filename), join(data_cleaned_dir, 'images', img_filename))
-            copyfile(join(data_dir, txt_filename), join(data_cleaned_dir, 'labels', txt_filename))
+
+            # Rather than copying the old .txt file, we create a new one only
+            # containing class 0 or 1 or both.
+            with open(join(data_cleaned_dir, 'labels', txt_filename), 'w') as f:
+                for index in filtered_lines_indices:
+                    f.write(f'{lines[index]}')
+                f.write('\n')
+                f.close()
