@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 """
 Splits the dataset images into a training, validation and optional testing splits
 and saves the file paths to .txt files, to be used with the Ultralytics YOLO format.

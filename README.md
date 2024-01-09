@@ -34,7 +34,7 @@ and place it inside the root of this repository.
 Example run:
 
 ```
-$ ./train.py --yolo-config=./yolov8n.yaml --train-config=./config/train_spl.yaml --epochs=3
+$ ./train.py --yolo-config=./yolov8n.yaml --train-config=./config/train_custom.yaml --epochs=3
 ```
 
 **NOTE:** Apple Silicon users can specify `--device=mps`, see [Apple M1 and M2 MPS Training](https://docs.ultralytics.com/modes/train/#apple-m1-and-m2-mps-training)
