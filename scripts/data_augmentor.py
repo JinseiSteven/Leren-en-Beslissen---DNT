@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 
 '''
 Image Augmenter class used for generating augmented images from a dataset.
@@ -11,7 +12,6 @@ import os
 from pathlib import Path
 from PIL import Image
 from random import shuffle
-from time import sleep
 try:
     from torch import Tensor
     from torchvision.tv_tensors import BoundingBoxes
