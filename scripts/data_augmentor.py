@@ -47,6 +47,8 @@ class Image_Augmentor:
     apply_augmentations(self, augmentations, prefix=None, ratio=0.1):
         Applies the chosen augmentations to the specified ratio of images. 
         Saves the results to a new subdirectory with the chosen prefix.
+    alter_augment(self, augment, parameter, value):
+        Alters an augment by changing a parameter to specified value.
     new_dir(self, destination):
         Creates a new folder at the specified path, relative to the sourcepath.
     yolo_to_bbox(self, x, y, w, h, W, H):
@@ -67,7 +69,7 @@ class Image_Augmentor:
                               'gaussian_blur': v2.GaussianBlur(kernel_size=(5, 9), sigma=(0.1, 5.)), 
                               'adjust_sharpness': v2.RandomAdjustSharpness(sharpness_factor=5),
                               'posterize': v2.RandomPosterize(bits=5),
-                              'random_rotation': v2.RandomRotation(degrees=(0, 180))}
+                              'random_rotation': v2.RandomRotation(degrees=(0, 45))}
 
         images = [os.path.join(sourcepath, 'images', file) for file in os.listdir(os.path.join(sourcepath, 'images')) 
                   if file.endswith(('.png', '.jpg', '.jpeg'))]
@@ -146,6 +148,25 @@ class Image_Augmentor:
                     for element in box:
                         label_file.write(" " + f"{element:.8f}")
                     label_file.write('\n')
+
+    def alter_augment(self, augment, parameter, value):
+        """
+        Alters an augment by changing a parameter to specified value.
+
+        Parameters
+        ----------
+        augment : str
+            The name of the augment to be changed.
+        parameter : str
+            The name of the parameter to be changed for the augment.
+        value : Union[int, float, tuple[Union[int, float]]]
+            The value to change the parameter to.
+        """
+        if augment in self._augmentations:
+            try:
+                setattr(self._augmentations[augment], parameter, value)
+            except Exception as e:
+                print(f"\nError\n-----\n{e}\n")
 
     def new_dir(self, destination):
         """
