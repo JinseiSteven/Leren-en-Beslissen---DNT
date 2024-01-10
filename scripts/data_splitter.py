@@ -1,4 +1,4 @@
-
+#!/usr/bin/env python3
 
 """
 Splits the dataset images into a training, validation and optional testing splits

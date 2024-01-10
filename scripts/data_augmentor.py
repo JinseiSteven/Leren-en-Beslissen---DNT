@@ -1,6 +1,7 @@
 
 '''
 Image Augmenter class used for generating augmented images from a dataset.
+WIP WIP WIP
 
 Usage: data_augmentor.py [--sourcepath ./path] --aug_type str [str... ]
 '''
@@ -10,7 +11,11 @@ import os
 from pathlib import Path
 from PIL import Image
 from random import shuffle
-from torchvision import transforms
+try:
+    from torchvision import transforms
+except ImportError:
+    print('Package `torchvision` not installed, run `pip3 install torchvision`')
+    exit(1)
 
 
 class Image_Augmentor:
