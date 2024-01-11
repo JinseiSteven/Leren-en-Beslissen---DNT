@@ -2,9 +2,8 @@
 
 '''
 Image Augmenter class used for generating augmented images from a dataset.
-WIP WIP WIP
 
-Usage: data_augmentor.py [--sourcepath ./path] --augments str [str... ]
+Usage: data_augmentor.py --augments str [str... ] [--sourcepath ./path] [--prefix str]  [--ratio float]
 '''
 
 import argparse
@@ -26,12 +25,14 @@ class Image_Augmentor:
     """
     A class used for generating augmented images from a dataset.
 
+    Supports any transform from the torchvision.transforms.v2 library.
+
     ...
 
     Attributes
     ----------
     sourcepath : Path
-        path to the dataset folder in which both an images and a labels folder resides
+        path to a directory in which both an images and labels folder resides
     augmentations : dict[str, torchvision.transform]
         dictionary containing all available augmentations:
             - colorjitter
@@ -45,10 +46,12 @@ class Image_Augmentor:
     Methods
     -------
     apply_augmentations(self, augmentations, prefix=None, ratio=0.1):
-        Applies the chosen augmentations to the specified ratio of images. 
+        Applies the chosen augmentations to the specified ratio of images.
         Saves the results to a new subdirectory with the chosen prefix.
     alter_augment(self, augment, parameter, value):
         Alters an augment by changing a parameter to specified value.
+    shuffle_order(self):
+        Shuffles the order in which the images will be chosen for augmentation.
     new_dir(self, destination):
         Creates a new folder at the specified path, relative to the sourcepath.
     yolo_to_bbox(self, x, y, w, h, W, H):
@@ -65,13 +68,14 @@ class Image_Augmentor:
             path to the dataset folder in which both an images and a labels folder resides
         """
         self.sourcepath = sourcepath
-        self._augmentations = {'colorjitter': v2.ColorJitter(brightness=(.5), saturation=(0.5,1.5),hue=(-0.5,0.5)), 
-                              'gaussian_blur': v2.GaussianBlur(kernel_size=(5, 9), sigma=(0.1, 5.)), 
-                              'adjust_sharpness': v2.RandomAdjustSharpness(sharpness_factor=5),
-                              'posterize': v2.RandomPosterize(bits=5),
-                              'random_rotation': v2.RandomRotation(degrees=(0, 45))}
+        self._augmentations = {'colorjitter': v2.ColorJitter(brightness=(.5), saturation=(0.5, 1.5), hue=(-0.5, 0.5)),
+                               'gaussian_blur': v2.GaussianBlur(kernel_size=(5, 9), sigma=(0.1, 5.)),
+                               'adjust_sharpness': v2.RandomAdjustSharpness(sharpness_factor=5),
+                               'posterize': v2.RandomPosterize(bits=5),
+                               'random_rotation': v2.RandomRotation(degrees=(0, 45))}
 
-        images = [os.path.join(sourcepath, 'images', file) for file in os.listdir(os.path.join(sourcepath, 'images')) 
+        images = [os.path.join(sourcepath, 'images', file)
+                  for file in os.listdir(os.path.join(sourcepath, 'images'))
                   if file.endswith(('.png', '.jpg', '.jpeg'))]
         shuffle(images)
 
@@ -79,7 +83,7 @@ class Image_Augmentor:
 
     def apply_augmentations(self, augmentations, prefix=None, ratio=0.1):
         """
-        Applies the chosen augmentations to the specified ratio of images. 
+        Applies the chosen augmentations to the specified ratio of images.
         Saves the results to a new subdirectory with the chosen prefix.
 
         If the argument `prefix` isn't passed in, the combination of augmentation names is used.
@@ -109,19 +113,19 @@ class Image_Augmentor:
         # iteratively creating N * ratio new images
         total_images = int(len(self._images) * ratio)
         for ix, _ in zip(range(total_images), tqdm(range(total_images), desc="Augmenting Images... ")):
-            
+
             # splitting the path to create the image and label paths
             split_path = os.path.split(self._images[ix])
             image_path = os.path.join(split_path[0], prefix, prefix + '_' + split_path[1])
             label_path = os.path.join(self.sourcepath, 'labels', prefix, prefix + '_' + Path(split_path[1]).stem + '.txt')
             old_label_path = os.path.join(self.sourcepath, 'labels', Path(split_path[1]).stem + '.txt')
-            
+
             # skipping any files which don't have a corresponding label file
             if not os.path.exists(old_label_path):
                 continue
 
             # opening the image and assessing the size
-            img = Image.open(self._images[ix]) 
+            img = Image.open(self._images[ix])
             H, W = v2.functional.get_size(img)
 
             # opening the corresponding labels file and extracting the boundary boxes (converted from YOLOv8 format)
@@ -168,6 +172,12 @@ class Image_Augmentor:
             except Exception as e:
                 print(f"\nError\n-----\n{e}\n")
 
+    def shuffle_order(self):
+        """
+        Shuffles the order in which the images will be chosen for augmentation.
+        """
+        shuffle(self._images)
+
     def new_dir(self, destination):
         """
         Creates a new folder at the specified path, relative to the sourcepath.
@@ -204,7 +214,7 @@ class Image_Augmentor:
         x1, x2 = (x - (w / 2.)) * W, (x + (w / 2.)) * W
         y1, y2 = (y - (h / 2.)) * H, (y + (h / 2.)) * H
         return [x1, y1, x2, y2]
-    
+
     # converting the bounding boxes to YOLO format
     def bbox_to_yolo(self, x1, y1, x2, y2, W, H):
         """
@@ -229,20 +239,29 @@ class Image_Augmentor:
         y = ((y1 + y2) / 2.0) / H
         w = (x2 - x1) / W
         h = (y2 - y1) / H
-        return [x ,y ,w ,h]
+        return [x, y, w, h]
 
 
 def main(args):
     Augmentor = Image_Augmentor(args.sourcepath)
+
+    # you can change the parameters of different augments here,
+    # usage: Augmentor.alter_augment(<augment name>, <parameter name>, <new value>)
+
     Augmentor.apply_augmentations(args.augments, prefix=args.prefix, ratio=args.ratio)
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('--sourcepath', type=Path, default='.', help="the folder where the images folder resides (default: current directory)", )
-    parser.add_argument('--prefix', type=str, help="the prefix to be used for the the augmented images and the augmented image and label folders")
-    parser.add_argument('--augments', required=True, choices=['colorjitter', 'gaussian_blur', 'adjust_sharpness', 'posterize', 'random_rotation'], nargs='+', help="the type of augmentation to be applied to the images")
-    parser.add_argument('--ratio', type=float, default=0.1, help="the ratio of images on which the augmentation will be applied (default: 0.1)")
+    parser.add_argument('--sourcepath', type=Path, default='.',
+                        help="the folder where the images folder resides (default: current directory)", )
+    parser.add_argument('--prefix', type=str,
+                        help="the prefix to be used for the the augmented images and the augmented image and label folders")
+    parser.add_argument('--augments', required=True, nargs='+',
+                        choices=['colorjitter', 'gaussian_blur', 'adjust_sharpness', 'posterize', 'random_rotation'],
+                        help="the type of augmentation to be applied to the images")
+    parser.add_argument('--ratio', type=float, default=0.1,
+                        help="the ratio of images on which the augmentation will be applied (default: 0.1)")
     args = parser.parse_args()
 
     args.augments = list(set(args.augments))
