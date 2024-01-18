@@ -31,6 +31,10 @@ def parse_arguments() -> argparse.Namespace:
     parser.add_argument('--device',
                         help='Device to run on, i.e. cuda device=0 or device=0,1,2,3 or device=cpu')
 
+    parser.add_argument('--batch-size',
+                        type=int,
+                        help='Specify the batch size during training')
+
     return parser.parse_args()
 
 if __name__ == '__main__':
@@ -42,5 +46,4 @@ if __name__ == '__main__':
     args = parse_arguments()
 
     model = YOLO(args.yolo_config)
-    results = model.train(data=args.train_config, epochs=args.epochs, device=args.device)
-    metrics = model.val()
+    results = model.train(data=args.train_config, epochs=args.epochs, device=args.device, batch=args.batch_size)
